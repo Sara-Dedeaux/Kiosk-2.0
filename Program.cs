@@ -38,6 +38,7 @@ namespace Kiosk_2._0
     
                         PayCash(selfCheckOut);
                         selfCheckOut.GetBalanceDue();
+                        //selfCheckOut.ValidateDenominations();
                     }//end cash if 
     
                     //CARD PAYMENT IS SELECTED
@@ -277,7 +278,7 @@ namespace Kiosk_2._0
              }//end while
 
              //IF KIOSK IS UNABLE TO PROVIDE CHANGE FOR THE PAYMENT ENTERED PAYMENT IS REFUNDED AND MESSAGE DISPLAYED
-                if (selfCheckOut.CalculateChange() > selfCheckOut.CheckBank() )
+                if (selfCheckOut.CalculateChange() > selfCheckOut.CheckBank())
                 {
 
                     Thread.Sleep(1000);
@@ -290,10 +291,28 @@ namespace Kiosk_2._0
                    MinorHeader($"\t\t\t\tENTER EXACT CHANGE OR PAY WITH A CARD.");  
                    Thread.Sleep(1000);
                    selfCheckOut.RefundHoldingChamber();
+                    
 
                 }//end if
 
-                selfCheckOut.ValidateDenominations();
+                 bool paymentMade= selfCheckOut.ValidateDenominations();
+                if (paymentMade==false) {
+
+                Thread.Sleep(1000);
+                MinorHeader($"\t\t\t\t\t UNABLE TO MAKE CHANGE.");
+                Thread.Sleep(1000);
+
+                MinorHeader($"\t\t\t\tYOUR PAYMENT OF: {selfCheckOut.HoldingChamber:C} HAS BEEN REFUNDED.");
+                Thread.Sleep(1000);
+
+                MinorHeader($"\t\t\t\tENTER EXACT CHANGE OR PAY WITH A CARD.");
+                Thread.Sleep(1000);
+                selfCheckOut.RefundHoldingChamber();
+                payment = 0;
+
+                }
+
+                selfCheckOut.GetBalanceDue();
 
             return payment;
      

@@ -26,7 +26,7 @@ namespace Kiosk_2{
 
         //KIOSK PHYSICAL MONEY/CARD STORAGE
         double[] arrCurrencyValues = { 100, 20, 10, 5, 1, .25, .10, .05, .01 };
-        int[] arrCurrencyCounts = { 0, 0, 0, 0, 0, 0, 0, 0, 20 };
+        int[] arrCurrencyCounts = { 1, 0, 0, 0, 0,0, 10, 0, 0 };
         string[] arrCurrencyNames = { "$Hundred$ Bill", "$Twenty$ Bill", "$Ten$ Bill", "$Five$ Bill", "$One$ Bill", "Quarter", "Dime", "Nickel", "Penny" };
         int[] arrChangeGiven = new int[9];
         string _creditCardNum = "";
@@ -51,8 +51,10 @@ namespace Kiosk_2{
 
         #region METHODS
               
-        public void ValidateDenominations() {
+        public bool ValidateDenominations() {
             double changeAvailable = 0;
+            bool paymentMade = false;
+            double[] arrChangeAvailable = new double[9];
             //LOOKS THROUGH ARRAY STARTING WITH THE SMALLEST DENOMINATION TO DETERMINE IF CHANGE CAN BE MADE
             for (int i = arrCurrencyCounts.Length-1; i >= 0; i--){
 
@@ -65,20 +67,44 @@ namespace Kiosk_2{
                 //WHILE THE DENOMINATIONS ARE SMALLER THAN CHANGE DUE- IT IS TOTALED AND ADDED TO CHANGE COUNT
                 else
                 {
+                    if (arrCurrencyValues[i])
                     changeAvailable += arrCurrencyValues[i] * arrCurrencyCounts[i];
                 }//end else
 
             }//end for loop
 
+
+
+            for (int i = 0; i < arrCurrencyValues.Length; i++) {
+
+                arrChangeAvailable[i] = arrCurrencyValues[i] * arrCurrencyCounts[i];
+                         
+            }//end for loop
+
+
+
             //IF THE CHANGE AVAILABLE IS SMALLER THAN WHAT THE KIOSK NEEDS TO PAY- MESSAGE IS DISPAYED AND PAYMENT IS REFUNDED
             if (changeAvailable < _changeDue || changeAvailable<_cashBack) {
                 if (changeAvailable < _cashBack) { 
                     ColorText("\n\t\t\t******* UNABLE TO MAKE CHANGE AT THIS TIME *******",ConsoleColor.DarkCyan);
+                  _cashBack = 0;
+                  paymentMade = false;
                 }//end if
                 
-                _holdingChamber = 0;
-                _cashBack = 0;
+                if (_changeDue > changeAvailable) {
+
+                    ColorText("\n\t\t\t******* UNABLE TO MAKE CHANGE AT THIS TIME. PLEASE PAY EXACT CHANGE OR WITH A CARD*******", ConsoleColor.DarkCyan);
+                    _holdingChamber = 0;
+                    
+                    paymentMade = false;
+                }
+
+
+                
             }//end if
+               else { paymentMade = true; }
+
+                return paymentMade;
         }//end method
         public double GetBalanceDue() {
             
