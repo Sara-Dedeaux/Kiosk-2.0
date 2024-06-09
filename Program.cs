@@ -295,20 +295,21 @@ namespace Kiosk_2._0
 
                 }//end if
 
-                 bool paymentMade= selfCheckOut.ValidateDenominations();
+                bool paymentMade = selfCheckOut.AltValidateDenominations(selfCheckOut.GetChangeDue);
+
                 if (paymentMade==false) {
 
                 Thread.Sleep(1000);
                 MinorHeader($"\t\t\t\t\t UNABLE TO MAKE CHANGE.");
                 Thread.Sleep(1000);
 
-                MinorHeader($"\t\t\t\tYOUR PAYMENT OF: {selfCheckOut.HoldingChamber:C} HAS BEEN REFUNDED.");
+                MinorHeader($"\t\t\t\tYOUR PAYMENT HAS BEEN REFUNDED.");
                 Thread.Sleep(1000);
 
                 MinorHeader($"\t\t\t\tENTER EXACT CHANGE OR PAY WITH A CARD.");
                 Thread.Sleep(1000);
                 selfCheckOut.RefundHoldingChamber();
-                payment = 0;
+                    payment=0;
 
                 }
 
@@ -334,12 +335,12 @@ namespace Kiosk_2._0
             selfCheckOut.CheckBank();
 
             //KIOSK METHOD CALLED TO MAKE SURE CHANGE CAN BE MADE WITH THE DENOMINATIONS AVAILABLE IN BANK 
-            selfCheckOut.ValidateDenominations();
+           bool cashBackAvialable= selfCheckOut.AltValidateDenominations(selfCheckOut.CashBack);
 
             //IF THE CASHBACK NEEDED IS GREATER THAN THE MONEY IN THE BANK MESSAGE IS DISPLAYED AND CASHBACK IS CLEARED
-            if ((double)selfCheckOut.CashBack > selfCheckOut.CheckBank())
+            if ((double)selfCheckOut.CashBack > selfCheckOut.CheckBank()|| cashBackAvialable==false)
             {
-                Console.WriteLine($"---------------We are unable to process cash back request at this time.--------------- \r---------------BALANCE DUE:  {selfCheckOut.GetBalanceDue():c}---------------");
+                Console.WriteLine($"\n\t\t---------------We are unable to process cash back request at this time.--------------- \n\n\t\t\t---------------BALANCE DUE:  {selfCheckOut.GetBalanceDue():c}---------------");
                 selfCheckOut.CashBack = 0;
             }//end if
 

@@ -50,7 +50,77 @@ namespace Kiosk_2{
         #endregion
 
         #region METHODS
-              
+
+        public bool AltValidateDenominations(double changeDue) {
+
+            Math.Round(changeDue,2);
+
+            if (changeDue == 0) {
+                return true;
+            }
+            double[] bufferCounts= new double[9];
+            for (int i = 0; i < arrCurrencyCounts.Length; i++){
+
+                bufferCounts[i] = arrCurrencyCounts[i];
+            
+            }//end for loop
+
+            for (int i = 0; i < bufferCounts.Length; i++) {
+
+                if (Math.Round(changeDue,2) == 0) { 
+                
+                    break;
+                }//end if
+
+                bool searchSlot=false;
+
+                while (searchSlot==false) { 
+                
+                    bool canFit=changeDue> arrCurrencyValues[i];
+                    bool changeAvailable = bufferCounts[i] > 0;
+
+                    if (canFit == true && changeAvailable == true)
+                    {
+
+                        Math.Round(changeDue -= arrCurrencyValues[i], 2);
+                        Math.Round(changeDue,2);
+                        
+                        bufferCounts[i] -=1;
+
+                        if (changeDue == 0)
+                        {
+                            
+                            break;
+                        }
+
+                    }//end if 
+                    else { 
+                    
+                        searchSlot = true;
+                    }//
+                
+                }//end while
+            
+            }//end for loop
+
+            if (changeDue == 0)
+            {
+
+                return true;
+            }
+
+            else { 
+
+                _holdingChamber = 0;
+                _cashBack = 0;
+                _changeDue = 0;
+            
+                return false;
+            }
+        
+        }//end method
+           
+        /*
         public bool ValidateDenominations() {
             double changeAvailable = 0;
             bool paymentMade = false;
@@ -106,6 +176,8 @@ namespace Kiosk_2{
 
                 return paymentMade;
         }//end method
+
+        */
         public double GetBalanceDue() {
             
            double debts = Math.Round(_itemsTotal + _cashBack,2);
