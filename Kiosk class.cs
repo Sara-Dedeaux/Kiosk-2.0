@@ -26,7 +26,7 @@ namespace Kiosk_2{
 
         //KIOSK PHYSICAL MONEY/CARD STORAGE
         double[] arrCurrencyValues = { 100, 20, 10, 5, 1, .25, .10, .05, .01 };
-        int[] arrCurrencyCounts = { 1, 0, 0, 0, 0,0, 10, 0, 0 };
+        int[] arrCurrencyCounts = { 0, 0, 10, 0, 10 ,0, 0, 0, 200 };
         string[] arrCurrencyNames = { "$Hundred$ Bill", "$Twenty$ Bill", "$Ten$ Bill", "$Five$ Bill", "$One$ Bill", "Quarter", "Dime", "Nickel", "Penny" };
         int[] arrChangeGiven = new int[9];
         string _creditCardNum = "";
@@ -53,7 +53,8 @@ namespace Kiosk_2{
 
         public bool AltValidateDenominations(double changeDue) {
 
-            Math.Round(changeDue,2);
+            changeDue = Math.Round(changeDue, 2);
+
 
             if (changeDue == 0) {
                 return true;
@@ -75,19 +76,22 @@ namespace Kiosk_2{
                 bool searchSlot=false;
 
                 while (searchSlot==false) { 
+
+                    changeDue=Math.Round(changeDue,2);
                 
-                    bool canFit=changeDue> arrCurrencyValues[i];
+                    bool canFit=Math.Round(changeDue,2)>= arrCurrencyValues[i];
                     bool changeAvailable = bufferCounts[i] > 0;
 
                     if (canFit == true && changeAvailable == true)
                     {
 
-                        Math.Round(changeDue -= arrCurrencyValues[i], 2);
-                        Math.Round(changeDue,2);
+                        changeDue=Math.Round(changeDue -= arrCurrencyValues[i], 2);
+                       
                         
                         bufferCounts[i] -=1;
 
-                        if (changeDue == 0)
+                        
+                        if (Math.Round(changeDue,2) == 0)
                         {
                             
                             break;
@@ -102,8 +106,9 @@ namespace Kiosk_2{
                 }//end while
             
             }//end for loop
+            changeDue=Math.Round((double)changeDue,2);
 
-            if (changeDue == 0)
+            if (changeDue==0)
             {
 
                 return true;
